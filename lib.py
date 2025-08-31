@@ -11,6 +11,8 @@ s.headers.update({'User-Agent': 'music finder'})
 
 with open('LASTFM.txt') as f:
     LASTFM_API_KEY = f.readline()
+    if LASTFM_API_KEY == '':
+        raise ValueError('No key was found in LASTFM.txt')
 
 # Obtains genres of an artist from their MBID
 def get_genres(mbid):
