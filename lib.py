@@ -1,5 +1,6 @@
 import requests
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 headers = {
     'User-Agent': 'music finder',
@@ -13,6 +14,7 @@ with open('LASTFM.txt') as f:
     LASTFM_API_KEY = f.readline()
     if LASTFM_API_KEY == '':
         raise ValueError('No key was found in LASTFM.txt')
+
 
 # Obtains genres of an artist from their MBID
 def get_genres(mbid):
@@ -81,10 +83,11 @@ def rank_genres(artists):
 
 # Gets all 100 artists that match a genre and country pair
 def get_artists_by_genre_country(genre, country):
-    r = s.get(f'''https://musicbrainz.org/ws/2/artist/?query=tag:"{genre}"AND%20country:{country}%20&fmt=json&limit=20''')
+
+    r = s.get(f'''https://musicbrainz.org/ws/2/artist/?query=tag:"{genre}"AND%20country:{country}%20&fmt=json&limit=100''')
     while r.status_code == 503:
         time.sleep(1.1)
-        r = s.get(f'''https://musicbrainz.org/ws/2/artist/?query=tag:"{genre}"AND%20country:{country}%20&fmt=json&limit=20''')
+        r = s.get(f'''https://musicbrainz.org/ws/2/artist/?query=tag:"{genre}"AND%20country:{country}%20&fmt=json&limit=100''')
     data = r.json()['artists']
 
     artists = []
@@ -104,26 +107,36 @@ def get_artists_by_genre_country(genre, country):
 def rank_artists_by_country(genres, country):
     artists = {}
     i = 0
-    
+
     for genre in genres.keys():
         if genres[genre] > min(genres.values()) and i < 10: # excludes lowest scored genres. may not be needed?
-            print(genre)
             i += 1
             artistsfound = get_artists_by_genre_country(genre, country)
             for artist in artistsfound:
-                spotify = get_spotify(artist['mbid'])
-                if spotify:
-                    if artist['name'] in artists.keys():
-                        artists[artist['name']]['score'] += genres[genre]
-                    else:
-                        artists[artist['name']] = {'score': genres[genre], 'url': None}
-                        artists[artist['name']]['url'] = spotify
+                if artist['name'] in artists.keys():
+                    artists[artist['name']]['score'] += genres[genre]
+                else:
+                    artists[artist['name']] = {'score': genres[genre], 'url': None}
+                    artists[artist['name']]['mbid'] = artist['mbid']
 
-    return {i : artists[i] for i in sorted(artists, key= lambda item: artists[item]['score'], reverse=True)}
+    with ThreadPoolExecutor() as exe:
+        res = exe.map(get_spotify, [artist['mbid'] for artist in list(artists.values())])
+        print(len(exe._threads))
+
+    links = dict(res)
+
+    for artist in list(artists.keys()):
+        if artist in links and links[artist] != False:
+            artists[artist]['url'] = links[artist]
+        else:
+            del artists[artist]
+
+    return artists
 
 
 def get_top_100_lastfm(username):
     r = s.get(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''', headers=headers)
+    print(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''')
     data = r.json()['topartists']['artist']
 
     artists = [i['name'] for i in data]
@@ -133,6 +146,7 @@ def get_top_100_lastfm(username):
 
 
 def get_spotify(mbid):
+    
     r = s.get(f'''https://musicbrainz.org/ws/2/artist/{mbid}?fmt=json&inc=url-rels''')
     while r.status_code == 503:
         time.sleep(1.1)
@@ -140,14 +154,16 @@ def get_spotify(mbid):
 
     try:
         data = r.json()['relations']
+        name = r.json()['name']
     except:
-        return False
+        return (None, False)
 
+    
     for rel in data:
         if 'spotify.com' in rel['url']['resource']:
-            return rel['url']['resource']
+            return (name, rel['url']['resource'])
 
-    return False
+    return (name, False)
 
 # print(get_artists_by_genre_country('indie rock', 'US'))
 
@@ -156,8 +172,7 @@ def get_spotify(mbid):
 t = time.time()
 artists = get_top_100_lastfm('fifisaac')
 genres = rank_genres(artists)
-print(genres)
-
+# print(genres)
 print(time.time() - t)
-print(rank_artists_by_country(genres, 'RU').keys())
+print(rank_artists_by_country(genres, 'BR'))
 print(time.time() - t)
