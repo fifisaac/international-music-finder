@@ -13,7 +13,7 @@
     <h1>international music finder</h1>
     <p>Find music you'll like from around the world based on your last.fm profile or chosen genres.</p>
 
-    <form action="/" method="post">
+    <form onsubmit="showText()" action="/" method="post">
         <label for="user">last.fm username:</label>
         <input type="text" name="user">
         <label for="country">country:</label>
@@ -271,6 +271,15 @@
         <br>
         <input type="submit" value="Load">
     </form>
+
+    <script>
+        function showText(){
+            var el = document.getElementById("Loading");
+            el.style.display = "block";
+        }
+    </script>
+
+    <p id="Loading" style="display: none">Loading your results. This could take over 30 seconds</p>
 
     {% if found %}
     <div class="container">
