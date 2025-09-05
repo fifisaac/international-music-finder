@@ -135,6 +135,7 @@ def rank_artists_by_country(genres, country):
 
 
 def get_top_100_lastfm(username):
+    print(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''')
     r = s.get(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''', headers=headers)
     print(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''')
     data = r.json()['topartists']['artist']
@@ -169,10 +170,11 @@ def get_spotify(mbid):
 
 # print(get_spotify('7388c2ac-e8e7-4fb3-91fe-d56aa1ddb947'))
 
-t = time.time()
-artists = get_top_100_lastfm('fifisaac')
-genres = rank_genres(artists)
-# print(genres)
-print(time.time() - t)
-print(rank_artists_by_country(genres, 'BR'))
-print(time.time() - t)
+if __name__ == '__main__':
+    t = time.time()
+    artists = get_top_100_lastfm('fifisaac')
+    genres = rank_genres(artists)
+    # print(genres)
+    print(time.time() - t)
+    print(rank_artists_by_country(genres, 'BR'))
+    print(time.time() - t)

@@ -6,21 +6,18 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}"/>
 </head>
-
-
 
 <body>
     <h1>international music finder</h1>
     <p>Find music you'll like from around the world based on your last.fm profile or chosen genres.</p>
 
-    <form>
-
-        <label>last.fm username:</label>
-        <input>
-        <label>country:</label>
-        <select>
+    <form action="/" method="post">
+        <label for="user">last.fm username:</label>
+        <input type="text" name="user">
+        <label for="country">country:</label>
+        <select name="country">
             <option value="AF">Afghanistan</option>
             <option value="AX">Åland Islands</option>
             <option value="AL">Albania</option>
@@ -273,15 +270,15 @@
         </select>
         <br>
         <input type="submit" value="Load">
-
     </form>
 
-    <!-- <div class="container">
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/3SXwqSqAoBz9WCI9PDQzY6?utm_source=generator" width="95%" height="80px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/3SXwqSqAoBz9WCI9PDQzY6?utm_source=generator" width="95%" height="80px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/3SXwqSqAoBz9WCI9PDQzY6?utm_source=generator" width="95%" height="80px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/artist/3SXwqSqAoBz9WCI9PDQzY6?utm_source=generator" width="95%" height="80px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div> -->
+    {% if found %}
+    <div class="container">
+        {% for url in urls %}
+            <iframe style="border-radius:12px" src="{{url}}" width="95%" height="80px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        {% endfor %}
+    </div>
+    {% endif %}
 
 </body>
 
