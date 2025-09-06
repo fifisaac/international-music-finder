@@ -23,20 +23,18 @@ def index():
         try:
             artists = musiclib.get_top_100_lastfm(user)
         except:
-            print('Error: invalid username?')
-            return render_template('index.html', countries=countries)
+            return render_template('index.html', countries=countries, error='Error: Invalid username')
 
         try:
             genres = musiclib.rank_genres(artists)
         except Exception as e:
-            print('Error: failed to get genres?', e)
-            return render_template('index.html', countries=countries)
+            return render_template('index.html', countries=countries, error='Error: failed to get genres')
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
             print('Error: failed to rank artists', e)
-            return render_template('index.html', countries=countries)
+            return render_template('index.html', countries=countries, error='Error: failed to rank artists')
 
         urls = []
         count = 0

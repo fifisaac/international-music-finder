@@ -121,7 +121,6 @@ def rank_artists_by_country(genres, country):
 
     with ThreadPoolExecutor() as exe:
         res = exe.map(get_spotify, [artist['mbid'] for artist in list(artists.values())])
-        print(len(exe._threads))
 
     links = dict(res)
 
@@ -135,9 +134,7 @@ def rank_artists_by_country(genres, country):
 
 
 def get_top_100_lastfm(username):
-    print(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''')
     r = s.get(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''', headers=headers)
-    print(f'''http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user={username}&api_key={LASTFM_API_KEY}&format=json&limit=30''')
     data = r.json()['topartists']['artist']
 
     artists = [i['name'] for i in data]
