@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import csv
 import musiclib
 
 app = Flask(__name__)
@@ -7,8 +8,12 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
+    with open('countries.csv', encoding='utf-8') as f:
+        data = csv.reader(f)
+        countries = list(data)
+
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('index.html', countries=countries)
 
     if request.method == 'POST':
         
@@ -19,19 +24,19 @@ def index():
             artists = musiclib.get_top_100_lastfm(user)
         except:
             print('Error: invalid username?')
-            return render_template('index.html')
+            return render_template('index.html', countries=countries)
 
         try:
             genres = musiclib.rank_genres(artists)
         except Exception as e:
             print('Error: failed to get genres?', e)
-            return render_template('index.html')
+            return render_template('index.html', countries=countries)
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
             print('Error: failed to rank artists', e)
-            return render_template('index.html')
+            return render_template('index.html', countries=countries)
 
         urls = []
         count = 0
@@ -42,9 +47,7 @@ def index():
             urls.append(url)
             count += 1
 
-        print(urls)
-
-        return render_template('index.html', found=True, urls=urls)
+        return render_template('index.html', found=True, urls=urls, countries=countries)
 
 
 
