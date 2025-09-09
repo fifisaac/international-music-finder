@@ -45,6 +45,9 @@ def index():
             urls.append(url)
             count += 1
 
+        if count = 0:
+            return render_template('index.html', countries=countries, error = 'Sorry, no results could be found')
+
         return render_template('index.html', found=True, urls=urls, countries=countries)
 
 

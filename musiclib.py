@@ -2,10 +2,8 @@ import requests
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-headers = {
-    'User-Agent': 'music finder',
-}
-
+# UA to avoid rate limiting
+headers = {'User-Agent': 'music finder',}
 s = requests.Session()
 s.headers.update({'User-Agent': 'music finder'})
 
