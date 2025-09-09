@@ -94,9 +94,12 @@ def get_artists_by_genre_country(genre, country):
         genres = {i['name'] : i['count'] for i in artist['tags']}
         maxcount = max(genres.values())
 
-        # Appends all artists who have the given genre with 1/4 of their max score and a max score greater than 1
+        MINCOUNT = 1 # Lowest maxcount value to be included
+        MINFRACTION = 4 # Fraction of maxcount for a genre to be registered
+
+        # Appends all artists who have the given genre with 1/MINFRACTION of their max score and a max score greater than MINCOUNT
         # Last check is to prevent tiny artists being included, but may actually be filtering out too many?
-        if genre in genres.keys() and genres[genre] > maxcount // 4 and maxcount > 1:
+        if genre in genres.keys() and genres[genre] > maxcount // MINFRACTION and maxcount >= MINCOUNT:
             artists.append({'name': artist['name'], 'mbid': artist['id']})
 
     return artists
@@ -160,16 +163,3 @@ def get_spotify(mbid):
             return (name, rel['url']['resource'])
 
     return (name, False)
-
-# print(get_artists_by_genre_country('indie rock', 'US'))
-
-# print(get_spotify('7388c2ac-e8e7-4fb3-91fe-d56aa1ddb947'))
-
-if __name__ == '__main__':
-    t = time.time()
-    artists = get_top_100_lastfm('fifisaac')
-    genres = rank_genres(artists)
-    # print(genres)
-    print(time.time() - t)
-    print(rank_artists_by_country(genres, 'BR'))
-    print(time.time() - t)

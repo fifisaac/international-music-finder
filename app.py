@@ -1,3 +1,5 @@
+# TO-DO: return country and username so form can maintain its values after POST request
+
 from flask import Flask, render_template, request
 import csv
 import musiclib
@@ -33,7 +35,6 @@ def index():
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
-            print('Error: failed to rank artists', e)
             return render_template('index.html', countries=countries, error='Error: failed to rank artists')
 
         urls = []
