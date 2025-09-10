@@ -15,11 +15,16 @@
 
     <form onsubmit="showText()" action="/" method="post">
         <label for="user">last.fm username:</label>
-        <input type="text" name="user">
+        <input type="text" name="user" value="{{user}}">
         <label for="country">country:</label>
         <select name="country">
             {% for country in countries %}
-                <option value="{{country[1]}}">{{country[0]}}</option> {% endfor %}
+                {% if country[1] == selected %}
+                    <option value="{{country[1]}}" selected>{{country[0]}}</option>
+                {% else %} 
+                    <option value="{{country[1]}}">{{country[0]}}</option>
+                {% endif %} {% endfor %}
+                
         </select>
         <br>
         <input type="submit" value="Load">

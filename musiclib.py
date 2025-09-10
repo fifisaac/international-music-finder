@@ -1,3 +1,5 @@
+# TODO: prevent artists with zero releases being included
+
 import requests
 import time
 from concurrent.futures import ThreadPoolExecutor

@@ -1,5 +1,3 @@
-# TO-DO: return country and username so form can maintain its values after POST request
-
 from flask import Flask, render_template, request
 import csv
 import musiclib
@@ -25,17 +23,23 @@ def index():
         try:
             artists = musiclib.get_top_100_lastfm(user)
         except:
-            return render_template('index.html', countries=countries, error='Error: Invalid username')
+            return render_template('index.html', countries=countries, 
+                                    error='Error: Invalid username', 
+                                    user=user, selected=country)
 
         try:
             genres = musiclib.rank_genres(artists)
         except Exception as e:
-            return render_template('index.html', countries=countries, error='Error: failed to get genres')
+            return render_template('index.html', countries=countries, 
+                                    error='Error: failed to get genres', 
+                                    user=user, selected=country)
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
-            return render_template('index.html', countries=countries, error='Error: failed to rank artists')
+            return render_template('index.html', countries=countries, 
+                                    error='Error: failed to rank artists', 
+                                    user=user, selected=country)
 
         urls = []
         count = 0
@@ -47,9 +51,12 @@ def index():
             count += 1
 
         if count == 0:
-            return render_template('index.html', countries=countries, error = 'Sorry, no results could be found')
+            return render_template('index.html', countries=countries, 
+                                    error='Sorry, no results could be found', 
+                                    user=user, selected=country)
 
-        return render_template('index.html', found=True, urls=urls, countries=countries)
+        return render_template('index.html', found=True, urls=urls, 
+                                countries=countries, user=user, selected=country)
 
 
 
