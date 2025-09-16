@@ -13,6 +13,15 @@
     <h1>international music finder</h1>
     <p>Find music you'll like from around the world based on your last.fm profile or chosen genres.</p>
 
+    <script>
+
+    </script>
+
+    <div class="tab">
+        <button class="active" onclick="openTab(event, 'Account')">By account</button>
+        <button class="tablinks" onclick="openTab(event, 'Genre')">By genres</button>
+      </div>
+
     <form onsubmit="showText()" action="/" method="post">
         <label for="user">last.fm username:</label>
         <input type="text" name="user" value="{{user}}">
