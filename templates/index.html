@@ -27,9 +27,10 @@
                 const resp = await fetch('https://musicbrainz.org/ws/2/genre/all?fmt=txt');
                 const text = await resp.text();
                 const txtarray = text.split(/\r?\n/);
+                var datalist = document.getElementById('genrelist')
 
                 for (i=0; i < txtarray.length; i++) {
-                    document.getElementById('genrelist').innerHTML += `<option value="${txtarray[i]}">`; 
+                    datalist.innerHTML += `<option value="${txtarray[i]}">`; 
                 }
             }
             else {
