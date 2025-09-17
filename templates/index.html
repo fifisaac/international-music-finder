@@ -14,17 +14,50 @@
     <p>Find music you'll like from around the world based on your last.fm profile or chosen genres.</p>
 
     <script>
+        async function openTab(event, tab) {
+            var tablinks = document.getElementsByClassName('active');
+            tablinks[0].classList.remove('active');
+            event.currentTarget.classList.add('active');
+
+            document.getElementById(tab).style.display = 'block';
+            if (tab == 'genre') {
+                document.getElementById('account').style.display = 'none';
+
+                // do this in python instead js is too slow?
+                const resp = await fetch('https://musicbrainz.org/ws/2/genre/all?fmt=txt');
+                const text = await resp.text();
+                const txtarray = text.split(/\r?\n/);
+
+                for (i=0; i < txtarray.length; i++) {
+                    document.getElementById('genrelist').innerHTML += `<option value="${txtarray[i]}">`; 
+                }
+            }
+            else {
+                document.getElementById('genre').style.display = 'none';
+            }
+        }
 
     </script>
 
     <div class="tab">
-        <button class="active" onclick="openTab(event, 'Account')">By account</button>
-        <button class="tablinks" onclick="openTab(event, 'Genre')">By genres</button>
+        <button class="active" onclick="openTab(event, 'account')">By profile</button>
+        <button class="tablinks" onclick="openTab(event, 'genre')">By genres</button>
       </div>
 
     <form onsubmit="showText()" action="/" method="post">
-        <label for="user">last.fm username:</label>
-        <input type="text" name="user" value="{{user}}">
+        <div id="account">
+            <label for="user">last.fm username:</label>
+            <input type="text" name="user" value="{{user}}">
+        </div>
+
+        <div id="genre" style="display: none">
+            <label for="genre">genres (up to 10):</label>
+            <input list="genrelist" name="genres">
+            <datalist id="genrelist">
+
+            </datalist>
+        </div>
+
         <label for="country">country:</label>
         <select name="country">
             {% for country in countries %}
