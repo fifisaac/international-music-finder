@@ -22,16 +22,6 @@
             document.getElementById(tab).style.display = 'block';
             if (tab == 'genre') {
                 document.getElementById('account').style.display = 'none';
-
-                // do this in python instead js is too slow?
-                const resp = await fetch('https://musicbrainz.org/ws/2/genre/all?fmt=txt');
-                const text = await resp.text();
-                const txtarray = text.split(/\r?\n/);
-                var datalist = document.getElementById('genrelist')
-
-                for (i=0; i < txtarray.length; i++) {
-                    datalist.innerHTML += `<option value="${txtarray[i]}">`; 
-                }
             }
             else {
                 document.getElementById('genre').style.display = 'none';
@@ -53,10 +43,15 @@
 
         <div id="genre" style="display: none">
             <label for="genre">genres (up to 10):</label>
-            <input list="genrelist" name="genres">
+            <input list="genrelist" name="genre">
             <datalist id="genrelist">
-
+                {% for genre in genres %}
+                    <option value="{{genre}}">
+                {% endfor %}
             </datalist>
+
+            
+
         </div>
 
         <label for="country">country:</label>
@@ -66,9 +61,9 @@
                     <option value="{{country[1]}}" selected>{{country[0]}}</option>
                 {% else %} 
                     <option value="{{country[1]}}">{{country[0]}}</option>
-                {% endif %} {% endfor %}
-                
+                {% endif %} {% endfor %}     
         </select>
+        
         <br>
         <input type="submit" value="Load">
     </form>

@@ -12,8 +12,12 @@ def index():
         data = csv.reader(f)
         countries = list(data)
 
+    with open('genres.csv', encoding='utf-8') as f:
+        genres = [i.rstrip() for i in f.readlines()]
+
     if request.method == 'GET':
-        return render_template('index.html', countries=countries)
+        return render_template('index.html', countries=countries,
+                                 genres=genres)
 
     if request.method == 'POST':
         
@@ -25,21 +29,24 @@ def index():
         except:
             return render_template('index.html', countries=countries, 
                                     error='Error: Invalid username', 
-                                    user=user, selected=country)
+                                    user=user, selected=country, 
+                                    genres=genres)
 
         try:
             genres = musiclib.rank_genres(artists)
         except Exception as e:
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to get genres', 
-                                    user=user, selected=country)
+                                    user=user, selected=country, 
+                                    genres=genres)
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
-                                    user=user, selected=country)
+                                    user=user, selected=country,
+                                    genres=genres)
 
         urls = []
         count = 0
@@ -53,10 +60,11 @@ def index():
         if count == 0:
             return render_template('index.html', countries=countries, 
                                     error='Sorry, no results could be found', 
-                                    user=user, selected=country)
+                                    user=user, selected=country, genres=genres)
 
         return render_template('index.html', found=True, urls=urls, 
-                                countries=countries, user=user, selected=country)
+                                countries=countries, user=user, selected=country,
+                                genres=genres)
 
 
 
