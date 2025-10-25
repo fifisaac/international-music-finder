@@ -1,6 +1,6 @@
 # TODO
 # open results page to correct tab
-# carry forward selected genres
+# carry forward selected genres after submit
 
 from flask import Flask, render_template, request
 import csv
