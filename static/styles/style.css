@@ -80,3 +80,9 @@ iframe {
 .tab button.active {
     color: white;
 }
+
+#genreselect {
+    height: 15em;
+    overflow: auto;
+    padding: 1rem
+}

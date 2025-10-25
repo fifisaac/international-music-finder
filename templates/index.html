@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+
+
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -22,9 +26,14 @@
             document.getElementById(tab).style.display = 'block';
             if (tab == 'genre') {
                 document.getElementById('account').style.display = 'none';
+                document.getElementsByName('user')[0].value = "";
             }
             else {
                 document.getElementById('genre').style.display = 'none';
+                const genreSelect = document.getElementsByName('genre')[0];
+                for (let i=0; i<genreSelect.options.length; i++) {
+                    genreSelect.options[i].selected = false;
+                }
             }
         }
 
@@ -34,8 +43,13 @@
         <button class="active" onclick="openTab(event, 'account')">By profile</button>
         <button class="tablinks" onclick="openTab(event, 'genre')">By genres</button>
       </div>
+       
 
-    <form onsubmit="showText()" action="/" method="post">
+        
+
+    </div>
+
+    <form id="form" onsubmit="showText()" action="/" method="post">
         <div id="account">
             <label for="user">last.fm username:</label>
             <input type="text" name="user" value="{{user}}">
@@ -43,16 +57,12 @@
 
         <div id="genre" style="display: none">
             <label for="genre">genres (up to 10):</label>
-            <input list="genrelist" name="genre">
-            <datalist id="genrelist">
-                {% for genre in genres %}
-                    <option value="{{genre}}">
-                {% endfor %}
-            </datalist>
-
-            
-
-        </div>
+            <select id="genreselect" name="genre" multiple>
+                    {% for genre in genres %}
+                        <option value="{{genre}}">{{genre}}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
         <label for="country">country:</label>
         <select name="country">

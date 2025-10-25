@@ -112,7 +112,7 @@ def rank_artists_by_country(genres, country):
     i = 0
 
     for genre in genres.keys():
-        if genres[genre] > min(genres.values()) and i < 10: # excludes lowest scored genres. may not be needed?
+        if genres[genre] > min(genres.values()) - 0.01 and i < 10: # excludes lowest scored genres. may not be needed? - 0.01 is a quick fix for when searching by genres, as all genres have same value
             i += 1
             artistsfound = get_artists_by_genre_country(genre, country)
             for artist in artistsfound:

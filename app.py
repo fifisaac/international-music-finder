@@ -1,3 +1,7 @@
+# TODO
+# open results page to correct tab
+# carry forward selected genres
+
 from flask import Flask, render_template, request
 import csv
 import musiclib
@@ -13,40 +17,50 @@ def index():
         countries = list(data)
 
     with open('genres.csv', encoding='utf-8') as f:
-        genres = [i.rstrip() for i in f.readlines()]
+        allGenres = [i.rstrip() for i in f.readlines()]
 
     if request.method == 'GET':
         return render_template('index.html', countries=countries,
-                                 genres=genres)
+                                 genres=allGenres)
 
     if request.method == 'POST':
         
         user = request.form['user']
         country = request.form['country']
 
-        try:
-            artists = musiclib.get_top_100_lastfm(user)
-        except:
-            return render_template('index.html', countries=countries, 
-                                    error='Error: Invalid username', 
-                                    user=user, selected=country, 
-                                    genres=genres)
+        if 'genre' in request.form.keys():
 
-        try:
-            genres = musiclib.rank_genres(artists)
-        except Exception as e:
-            return render_template('index.html', countries=countries, 
-                                    error='Error: failed to get genres', 
-                                    user=user, selected=country, 
-                                    genres=genres)
+            genres = {i:1 for i in request.form.getlist('genre')}
+            print(genres)
+
+        else:
+
+            user = request.form['user']
+
+            try:
+                artists = musiclib.get_top_100_lastfm(user)
+            except:
+                return render_template('index.html', countries=countries, 
+                                        error='Error: Invalid username', 
+                                        user=user, selected=country, 
+                                        genres=allGenres)
+
+            try:
+                genres = musiclib.rank_genres(artists)
+            except Exception as e:
+                return render_template('index.html', countries=countries, 
+                                        error='Error: failed to get genres', 
+                                        user=user, selected=country, 
+                                        genres=allGenres)
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
+            print(e)
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
                                     user=user, selected=country,
-                                    genres=genres)
+                                    genres=allGenres)
 
         urls = []
         count = 0
@@ -60,11 +74,11 @@ def index():
         if count == 0:
             return render_template('index.html', countries=countries, 
                                     error='Sorry, no results could be found', 
-                                    user=user, selected=country, genres=genres)
+                                    user=user, selected=country, genres=allGenres)
 
         return render_template('index.html', found=True, urls=urls, 
                                 countries=countries, user=user, selected=country,
-                                genres=genres)
+                                genres=allGenres)
 
 
 
