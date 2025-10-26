@@ -19,7 +19,8 @@
 
     <script>
         async function openTab(event, tab) {
-            var tablinks = document.getElementsByClassName('active');
+            var tablinks = document.getElementsByClassName("active");
+            console.log(tablinks)
             tablinks[0].classList.remove('active');
             event.currentTarget.classList.add('active');
 
@@ -40,29 +41,50 @@
     </script>
 
     <div class="tab">
-        <button class="active" onclick="openTab(event, 'account')">By profile</button>
-        <button class="tablinks" onclick="openTab(event, 'genre')">By genres</button>
-      </div>
-       
-
-        
-
+        {% if tab == 'account' %}
+            <button class="active" onclick="openTab(event, 'account')">By profile</button>
+            <button class="tablinks" onclick="openTab(event, 'genre')">By genres</button>
+        {% else %}
+            <button class="tablinks" onclick="openTab(event, 'account')">By profile</button>
+            <button class="active" onclick="openTab(event, 'genre')">By genres</button>
+        {% endif %}
     </div>
 
     <form id="form" onsubmit="showText()" action="/" method="post">
-        <div id="account">
-            <label for="user">last.fm username:</label>
-            <input type="text" name="user" value="{{user}}">
-        </div>
 
-        <div id="genre" style="display: none">
-            <label for="genre">genres (up to 10):</label>
-            <select id="genreselect" name="genre" multiple>
-                    {% for genre in genres %}
-                        <option value="{{genre}}">{{genre}}</option>
-                    {% endfor %}
-                </select>
+        {% if tab == 'account' %}
+            <div id="account">
+                <label for="user">last.fm username:</label>
+                <input type="text" name="user" value="{{user}}">
             </div>
+
+            <div id="genre" style="display: none">
+                <label for="genre">genres (up to 10):</label>
+                <select id="genreselect" name="genre" multiple>
+                        {% for genre in genres %}
+                            <option value="{{genre}}">{{genre}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+        {% else %}
+
+            <div id="account" style="display: none">
+                <label for="user">last.fm username:</label>
+                <input type="text" name="user" value="{{user}}">
+            </div>
+
+            <div id="genre">
+                <label for="genre">genres (up to 10):</label>
+                <select id="genreselect" name="genre" multiple>
+                        {% for genre in genres %}
+                            <option value="{{genre}}">{{genre}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+        {% endif %}
 
         <label for="country">country:</label>
         <select name="country">

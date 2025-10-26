@@ -1,10 +1,11 @@
 # TODO
-# open results page to correct tab
 # carry forward selected genres after submit
+# comments
 
 from flask import Flask, render_template, request
 import csv
 import musiclib
+
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def index():
 
     if request.method == 'GET':
         return render_template('index.html', countries=countries,
-                                 genres=allGenres)
+                                 genres=allGenres, tab='account')
 
     if request.method == 'POST':
         
@@ -30,10 +31,14 @@ def index():
 
         if 'genre' in request.form.keys():
 
+            tab = 'genre'
+
             genres = {i:1 for i in request.form.getlist('genre')}
             print(genres)
 
         else:
+
+            tab = 'account'
 
             user = request.form['user']
 
@@ -43,7 +48,7 @@ def index():
                 return render_template('index.html', countries=countries, 
                                         error='Error: Invalid username', 
                                         user=user, selected=country, 
-                                        genres=allGenres)
+                                        genres=allGenres, tab=tab)
 
             try:
                 genres = musiclib.rank_genres(artists)
@@ -51,16 +56,15 @@ def index():
                 return render_template('index.html', countries=countries, 
                                         error='Error: failed to get genres', 
                                         user=user, selected=country, 
-                                        genres=allGenres)
+                                        genres=allGenres, tab=tab)
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
-            print(e)
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
                                     user=user, selected=country,
-                                    genres=allGenres)
+                                    genres=allGenres, tab=tab)
 
         urls = []
         count = 0
@@ -74,11 +78,12 @@ def index():
         if count == 0:
             return render_template('index.html', countries=countries, 
                                     error='Sorry, no results could be found', 
-                                    user=user, selected=country, genres=allGenres)
+                                    user=user, selected=country, genres=allGenres,
+                                    tab=tab)
 
         return render_template('index.html', found=True, urls=urls, 
                                 countries=countries, user=user, selected=country,
-                                genres=allGenres)
+                                genres=allGenres, tab=tab)
 
 
 
