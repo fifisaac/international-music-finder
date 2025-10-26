@@ -61,3 +61,28 @@ label {
 iframe {
     padding: 10px 10px 10px 10px;
 }
+
+.tab button {
+    padding: 0.5rem 0.8rem;
+	margin: 0.4rem 0;
+    text-overflow: ellipsis;
+	box-sizing: border-box;
+	background: #353535;
+	color: rgb(114, 114, 114);
+	border: 1px solid rgb(114, 114, 114);
+    border-radius: 2em;
+}
+
+.tab button:hover {
+    border-color: rgb(255, 255, 255);
+}
+
+.tab button.active {
+    color: white;
+}
+
+#genreselect {
+    height: 15em;
+    overflow: auto;
+    padding: 1rem
+}
