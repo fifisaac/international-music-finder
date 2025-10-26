@@ -1,6 +1,6 @@
 # TODO
-# carry forward selected genres after submit
-# comments
+# make limit on genre selection up to 10
+# comments and tidying
 
 from flask import Flask, render_template, request
 import csv
@@ -32,15 +32,14 @@ def index():
         if 'genre' in request.form.keys():
 
             tab = 'genre'
-
             genres = {i:1 for i in request.form.getlist('genre')}
-            print(genres)
 
         else:
 
             tab = 'account'
 
             user = request.form['user']
+            genres = {} # empty placeholder for returning template
 
             try:
                 artists = musiclib.get_top_100_lastfm(user)
@@ -64,7 +63,8 @@ def index():
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
                                     user=user, selected=country,
-                                    genres=allGenres, tab=tab)
+                                    genres=allGenres, tab=tab,
+                                    selectedGenres = genres.keys())
 
         urls = []
         count = 0
@@ -79,11 +79,11 @@ def index():
             return render_template('index.html', countries=countries, 
                                     error='Sorry, no results could be found', 
                                     user=user, selected=country, genres=allGenres,
-                                    tab=tab)
+                                    tab=tab, selectedGenres = genres.keys())
 
         return render_template('index.html', found=True, urls=urls, 
                                 countries=countries, user=user, selected=country,
-                                genres=allGenres, tab=tab)
+                                genres=allGenres, tab=tab, selectedGenres = genres.keys())
 
 
 

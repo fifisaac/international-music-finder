@@ -79,7 +79,11 @@
                 <label for="genre">genres (up to 10):</label>
                 <select id="genreselect" name="genre" multiple>
                         {% for genre in genres %}
-                            <option value="{{genre}}">{{genre}}</option>
+                            {% if genre in selectedGenres %}
+                                <option value="{{genre}}" selected>{{genre}}</option>
+                            {% else %}
+                                <option value="{{genre}}">{{genre}}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
