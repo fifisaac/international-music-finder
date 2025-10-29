@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 
-
-
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,7 +18,6 @@
     <script>
         async function openTab(event, tab) {
             var tablinks = document.getElementsByClassName("active");
-            console.log(tablinks)
             tablinks[0].classList.remove('active');
             event.currentTarget.classList.add('active');
 
@@ -36,6 +33,25 @@
                     genreSelect.options[i].selected = false;
                 }
             }
+        }
+
+        async function checkGenres(event) {
+
+            var e = document.getElementById("genreselect");
+            var count = 0;
+
+            for (let i=0; i<e.options.length; i++) {
+                if (e.options[i].selected == true) {
+                    count += 1;
+                }
+            }
+
+            if (count > 9) {
+
+                e.options[e.selectedIndex].selected = false;
+
+            }
+
         }
 
     </script>
@@ -58,7 +74,7 @@
                 <input type="text" name="user" value="{{user}}">
             </div>
 
-            <div id="genre" style="display: none">
+            <div id="genre" style="display: none" onclick="checkGenres()">
                 <label for="genre">genres (up to 10):</label>
                 <select id="genreselect" name="genre" multiple>
                         {% for genre in genres %}
