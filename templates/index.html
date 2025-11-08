@@ -48,7 +48,7 @@
 
             if (count > 9) {
 
-                e.options[e.selectedIndex].selected = false;
+                event.target.selected = false;
 
             }
 
@@ -74,7 +74,7 @@
                 <input type="text" name="user" value="{{user}}">
             </div>
 
-            <div id="genre" style="display: none" onclick="checkGenres()">
+            <div id="genre" style="display: none" onclick="checkGenres(event)">
                 <label for="genre">genres (up to 10):</label>
                 <select id="genreselect" name="genre" multiple>
                         {% for genre in genres %}

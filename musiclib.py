@@ -88,11 +88,14 @@ def get_artists_by_genre_country(genre, country):
     while r.status_code == 503:
         time.sleep(1.1)
         r = s.get(f'''https://musicbrainz.org/ws/2/artist/?query=tag:"{genre}"AND%20country:{country}%20&fmt=json&limit=100''')
+
     data = r.json()['artists']
 
     artists = []
 
     for artist in data:
+        if 'tags' not in artist:
+            break
         genres = {i['name'] : i['count'] for i in artist['tags']}
         maxcount = max(genres.values())
 

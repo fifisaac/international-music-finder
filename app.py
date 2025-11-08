@@ -1,5 +1,5 @@
 # TODO
-# make limit on genre selection up to 10
+# fix max retries exceeded error - caused by thread for spotify?
 # comments and tidying
 
 from flask import Flask, render_template, request
@@ -37,7 +37,6 @@ def index():
         else:
 
             tab = 'account'
-
             user = request.form['user']
             genres = {} # empty placeholder for returning template
 
@@ -60,6 +59,7 @@ def index():
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
         except Exception as e:
+            print(e)
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
                                     user=user, selected=country,
@@ -84,7 +84,6 @@ def index():
         return render_template('index.html', found=True, urls=urls, 
                                 countries=countries, user=user, selected=country,
                                 genres=allGenres, tab=tab, selectedGenres = genres.keys())
-
 
 
 if __name__ == '__main__':

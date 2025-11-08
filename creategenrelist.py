@@ -1,6 +1,5 @@
 import requests
 import time
-import csv
 
 def generate(minartists):
     headers = {'User-Agent': 'music finder',}
