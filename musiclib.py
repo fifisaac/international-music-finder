@@ -125,18 +125,21 @@ def rank_artists_by_country(genres, country):
                     artists[artist['name']] = {'score': genres[genre], 'url': None}
                     artists[artist['name']]['mbid'] = artist['mbid']
 
+    print(artists)
+
     with ThreadPoolExecutor() as exe:
-        res = exe.map(get_spotify, [artist['mbid'] for artist in list(artists.values())])
+        res = exe.map(get_spotify, [artist['mbid'] for artist in list(artists.values())][:20])
 
     links = dict(res)
 
+    topartists = {}
+
     for artist in list(artists.keys()):
         if artist in links and links[artist] != False:
-            artists[artist]['url'] = links[artist]
-        else:
-            del artists[artist]
+            topartists[artist] = artists[artist]
+            topartists[artist]['url'] = links[artist]
 
-    return artists
+    return topartists
 
 
 def get_top_100_lastfm(username):
@@ -165,6 +168,7 @@ def get_spotify(mbid):
     
     for rel in data:
         if 'spotify.com' in rel['url']['resource']:
+            print(name)
             return (name, rel['url']['resource'])
 
     return (name, False)
