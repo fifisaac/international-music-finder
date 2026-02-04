@@ -58,9 +58,7 @@ def index():
 
         try:
             artistsfound = musiclib.rank_artists_by_country(genres, country)
-            print("POST")
-        except Exception as e:
-            print(e)
+        except Exception as e
             return render_template('index.html', countries=countries, 
                                     error='Error: failed to rank artists', 
                                     user=user, selected=country,

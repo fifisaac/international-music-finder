@@ -2,6 +2,7 @@
 
 import requests
 import time
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 # UA to avoid rate limiting
@@ -9,12 +10,13 @@ headers = {'User-Agent': 'music finder',}
 s = requests.Session()
 s.headers.update({'User-Agent': 'music finder'})
 
+LASTFM_API_KEY = os.getenv("LASTFM")
 
-with open('LASTFM.txt') as f:
-    LASTFM_API_KEY = f.readline()
-    if LASTFM_API_KEY == '':
-        raise ValueError('No key was found in LASTFM.txt')
-
+if LASTFM_API_KEY == None:
+    with open('LASTFM.txt') as f:
+            LASTFM_API_KEY = f.readline()
+            if LASTFM_API_KEY == '':
+                raise ValueError('No key was found in LASTFM.txt')
 
 # Obtains genres of an artist from their MBID
 def get_genres(mbid):
@@ -125,9 +127,8 @@ def rank_artists_by_country(genres, country):
                     artists[artist['name']] = {'score': genres[genre], 'url': None}
                     artists[artist['name']]['mbid'] = artist['mbid']
 
-    print(artists)
-
-    with ThreadPoolExecutor() as exe:
+    # max_workers should avoid rate limit issues, may need to be tweaked with if they come back
+    with ThreadPoolExecutor(max_workers=10) as exe:
         res = exe.map(get_spotify, [artist['mbid'] for artist in list(artists.values())][:20])
 
     links = dict(res)
@@ -168,7 +169,6 @@ def get_spotify(mbid):
     
     for rel in data:
         if 'spotify.com' in rel['url']['resource']:
-            print(name)
             return (name, rel['url']['resource'])
 
     return (name, False)
